@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Privacy guarantee: the browser refuses to send data anywhere except this site's own static files. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self' blob: data:; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="description" content="Black out SSNs, account numbers and personal details in PDFs and screenshots before you send them. Runs entirely in your browser — your file is never uploaded." />
+  <title>Blackbar — Redact documents privately</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111'/%3E%3Crect x='6' y='13' width='20' height='6' rx='1.5' fill='%23fff'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="logo" aria-hidden="true"></span>Blackbar</a>
+    <span class="badge" title="This page's security policy blocks uploads. Your file stays in this browser tab.">🔒 Your file never leaves this device</span>
+  </header>
+
+  <main id="landing" class="landing">
+    <section class="hero">
+      <h1>Black out private info<br />before you hit send.</h1>
+      <p class="lede">Sending a pay stub to a landlord? A bank statement to a lender? A screenshot to the internet?
+        Blackbar finds your SSN, account numbers and other details and <strong>permanently</strong> removes them, right in your browser.</p>
+      <label id="dropzone" class="dropzone" tabindex="0">
+        <input id="file" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" hidden />
+        <span class="dz-icon" aria-hidden="true">⬇</span>
+        <span class="dz-title">Drop a PDF or image here</span>
+        <span class="dz-sub">or click to choose a file · PDF, PNG, JPG</span>
+      </label>
+      <p id="landing-error" class="error" role="alert" hidden></p>
+    </section>
+
+    <section class="how">
+      <div><h3>1. Open your file</h3><p>Bank statements, pay stubs, tax forms, IDs, screenshots. Scans and photos work too.</p></div>
+      <div><h3>2. Check what's hidden</h3><p>Blackbar marks SSNs, account and routing numbers, card numbers, birth dates and more. Click to unhide, drag to hide anything else.</p></div>
+      <div><h3>3. Download</h3><p>Every page is flattened, so the hidden text is <em>gone</em>, not just covered. You can't copy it or peel it off.</p></div>
+    </section>
+
+    <section class="why">
+      <h2>Why not just draw black boxes?</h2>
+      <p>In most PDF editors a black box is a sticker on top of the text. The text is still there, and anyone can copy it out or delete the box.
+        Blackbar rebuilds each page as a clean image with the details burned out, and strips hidden metadata and photo location data.</p>
+      <h2>Is it really private?</h2>
+      <p>Yes. There's no server to upload to. Your file is processed by code running in this tab, and this page's security policy
+        blocks it from sending data anywhere. Close the tab and it's gone.</p>
+    </section>
+  </main>
+
+  <div id="editor" class="editor" hidden>
+    <aside class="controls">
+      <div class="filebar">
+        <span id="filename" class="filename"></span>
+        <button id="reset" class="link">Open another file</button>
+      </div>
+
+      <div class="group">
+        <h4>What are you sending it for?</h4>
+        <div id="presets" class="presets"></div>
+        <p id="preset-hint" class="hint"></p>
+      </div>
+
+      <div class="group">
+        <h4>Hide</h4>
+        <div id="categories" class="categories"></div>
+        <label class="check"><input id="keep4" type="checkbox" /> Keep last 4 digits of account &amp; card numbers</label>
+      </div>
+
+      <div class="group">
+        <h4>Also hide these words</h4>
+        <textarea id="custom" rows="2" placeholder="e.g. your name, employer, street. Separate with commas"></textarea>
+      </div>
+
+      <div class="group" id="ocr-group" hidden>
+        <button id="ocr" class="secondary">Also read text inside images (OCR)</button>
+        <p class="hint">Use this if the PDF contains scanned pages, photos of IDs or checks.</p>
+      </div>
+
+      <p class="hint tip">Click a black box to unhide it. Drag on the page to hide anything else, like a photo or signature.</p>
+
+      <button id="download" class="primary">Download redacted file</button>
+      <p id="summary" class="hint center"></p>
+
+      <details class="findings">
+        <summary>Show everything that was found</summary>
+        <ol id="findings"></ol>
+      </details>
+    </aside>
+
+    <section class="viewer">
+      <div id="status" class="status" hidden><span id="status-text"></span><progress id="status-bar" max="1"></progress></div>
+      <div id="pages" class="pages"></div>
+    </section>
+  </div>
+
+  <footer class="foot">Blackbar runs entirely in your browser. Always check the result before you send it.</footer>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

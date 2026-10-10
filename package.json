@@ -1,0 +1,30 @@
+{
+  "name": "blackbar",
+  "version": "1.0.0",
+  "description": "Redact documents privately in your browser",
+  "scripts": {
+    "assets": "node scripts/copy-assets.mjs",
+    "dev": "npm run assets && vite",
+    "build": "npm run assets && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "fixtures": "node e2e/make-fixtures.mjs && pdftoppm -r 110 -png -singlefile e2e/fixtures/statement.pdf e2e/fixtures/statement && node e2e/make-fixtures.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.4",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.10.38",
+    "tesseract.js": "^5.1.1"
+  },
+  "private": true
+}
